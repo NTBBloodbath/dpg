@@ -19,7 +19,7 @@ const config = @import("config.zig");
 /// DPG version
 const version = "0.1.0";
 
-/// I love XDG standards and so will you, MacOS.
+// I love XDG standards and so will you, MacOS.
 pub const known_folders_config = .{
     .xdg_on_mac = true,
     .xdg_force_default = true,
@@ -106,6 +106,7 @@ pub fn main() !void {
     // Load recipe file
     var recipe_data = try config.readConfig(allocator, recipe_file);
     defer recipe_data.deinit(allocator);
+
     for (recipe_data.packages) |pkg| {
         try stdout.print("Fetching '{s}' from {s} ...\n", .{ pkg.name, pkg.url });
     }

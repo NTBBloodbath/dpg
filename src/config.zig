@@ -14,6 +14,7 @@
 const std = @import("std");
 const known_folders = @import("known-folders");
 
+/// Package declaration struct
 pub const PackageDecl = struct {
     /// URL to get the binary from
     url: []const u8,
@@ -22,6 +23,7 @@ pub const PackageDecl = struct {
     /// Get a specific version of the software, defaults to latest release
     tag: []const u8 = "latest",
 
+    /// Free the memory that is being used by the package declaration fields
     pub fn deinit(self: *const PackageDecl, allocator: std.mem.Allocator) void {
         defer allocator.free(self.url);
         defer allocator.free(self.tag);
@@ -29,10 +31,14 @@ pub const PackageDecl = struct {
     }
 };
 
+/// Recipe file contents struct
 pub const Config = struct {
+    /// Path where DPG should install the binaries
     install_path: []const u8,
+    /// Packages declaration array, see `PackageDecl` struct
     packages: []const PackageDecl,
 
+    /// Free the memory that is being used by the recipe file contents
     pub fn deinit(self: *Config, allocator: std.mem.Allocator) void {
         defer allocator.free(self.install_path);
         for (self.packages) |pkg| {
@@ -41,6 +47,8 @@ pub const Config = struct {
     }
 };
 
+/// Returns the DPG configuration directory path in your system, e.g. `/Users/alejandro/.config/dpg`
+/// You must manually `free` the path later!
 fn getConfigDirPath(allocator: std.mem.Allocator) ![]const u8 {
     const config_dir_path = try known_folders.getPath(allocator, known_folders.KnownFolder.local_configuration);
     const dpg_config_path = try allocator.alloc(u8, config_dir_path.?.len + "/dpg".len);
@@ -49,6 +57,8 @@ fn getConfigDirPath(allocator: std.mem.Allocator) ![]const u8 {
     return dpg_config_path;
 }
 
+/// Returns the DPG configuration file path in your system, e.g. `/Users/alejandro/.config/dpg/recipe.json`
+/// You must manually `free` the path later!
 fn getConfigFilePath(allocator: std.mem.Allocator) ![]const u8 {
     const dpg_config_path = try getConfigDirPath(allocator);
     const dpg_recipe_path = try allocator.alloc(u8, dpg_config_path.len + "/recipe.json".len);
@@ -57,6 +67,7 @@ fn getConfigFilePath(allocator: std.mem.Allocator) ![]const u8 {
     return dpg_recipe_path;
 }
 
+/// Create DPG configuration directory and a sample recipe file if needed, otherwise does nothing
 pub fn createConfig(allocator: std.mem.Allocator) !void {
     const dpg_config_path = try getConfigDirPath(allocator);
     defer allocator.free(dpg_config_path);
@@ -116,6 +127,7 @@ pub fn createConfig(allocator: std.mem.Allocator) !void {
     }
 }
 
+/// Read a recipe file, parse the JSON contents and returns a `Config` struct
 pub fn readConfig(allocator: std.mem.Allocator, path: ?[]const u8) !Config {
     var config: []const u8 = "";
 
