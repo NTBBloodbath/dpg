@@ -1,0 +1,3 @@
+# Zig artifacts and cache
+zig-out/
+zig-cache/

@@ -1,0 +1,22 @@
+* `dpg` - Get your dotfiles binaries right from your terminal
+  dpg (Dotfiles Packages Getter) is a terminal CLI to easily grab your
+  /essential/ ricing packages in a declarative /and reproducible/  way
+  (only Linux and MacOS supported).
+
+  > Pretty much vaporwave /yet/, come back later for progress.
+
+** Installing
+   Right now the only way to get DPG is to build it from source as much
+   as I hate that way (I will change it later once DPG becomes stable
+   and usable!).
+
+   > *Important*: dpg needs Zig master branch (`v0.11`)!
+
+   @code bash
+   git clone https://github.com/NTBBloodbath/dpg.git \
+       && cd dpg \
+       && zig build -fsummary -Doptimize=ReleaseSafe
+   @end
+
+** License
+   As any other of my projects, {./LICENSE}[GPLv3] rulez.
